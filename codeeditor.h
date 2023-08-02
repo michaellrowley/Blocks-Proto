@@ -17,13 +17,14 @@ class CodeEditor : public QTextBrowser
     Q_OBJECT
 public:
     CodeEditor(Project& project, const std::string& path, QWidget* const parent = nullptr);
-    void LoadFile(const std::string& path);
+    void LoadFile(const std::string& relativePath);
+    void Reload();
 
 private:
     std::string filePath;
     std::reference_wrapper<Project> activeProject;
 
-    std::unordered_map<std::string, std::unique_ptr<QAction>> keyBindings;
+    std::unordered_map<std::string, std::vector<std::unique_ptr<QAction>>> keyBindings;
 
     struct {
         Annotation activeAnnotation;
@@ -33,7 +34,11 @@ private:
 
     std::string AnnotateCode(const std::string& codeStr, const std::vector<Annotation>& applicableAnnotations);
     std::string HTMLFormatAnnotation(const Annotation& sample, const std::string& linePrefix = "| ");
+
 private slots:
+    void ReloadFile();
+    void ToggleBookmark();
+    void DeleteAnnotation();
     void BeginAnnotation();
     void AnnotationSubmit();
  };
